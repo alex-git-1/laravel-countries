@@ -33,7 +33,7 @@ class Builder
 
         $region = CountryRegion::whereSlug($country->region, $country->lang)
             ->firstOrFail();
-
+ 
         $countryCreated = $region->countries()->create([
             'capital' => $country->capital,
             'official_name' => $country->official_name,
@@ -47,16 +47,16 @@ class Builder
             'population' => $country->population,
             'area' => $country->area,
             'gdp' => $country->gdp,
-            'languages' => $country->languages,
-            'tld' => $country->tld,
-            'alternative_tld' => $country->alternative_tlds,
-            'borders' => array_map('strtolower', array_column($country->borders, 'iso_alpha_2')) ?? [],
-            'timezones' => [
+            'languages' => json_encode($country->languages),
+            'tld' => json_encode($country->tld),
+            'alternative_tld' => json_encode($country->alternative_tlds),
+            'borders' => json_encode(!empty($country->borders) ? array_map('strtolower', array_column($country->borders, 'iso_alpha_2')) : []),
+            'timezones' => json_encode([
                 'main' => $country->timezones[0] ?? [],
                 'others' => array_slice($country->timezones, 1) ?? [],
-            ],
+            ]),
 
-            'currency' => [
+            'currency' => json_encode([
                 'name' => $country->currency['name'] ?? null,
                 'code' => $country->currency['code'] ?? null,
                 'symbol' => $country->currency['symbol'] ?? null,
@@ -70,9 +70,9 @@ class Builder
                     'sub' => $country->currency['sub_unit'] ?? null,
                     'to_unit' => $country->currency['sub_unit_to_unit'] ?? null,
                 ],
-            ],
+            ]),
 
-            'flag_emoji' => [
+            'flag_emoji' => json_encode([
                 'img' => $country->emoji['img'] ?? null,
                 'utf8' => $country->emoji['utf8'] ?? null,
                 'utf16' => $country->emoji['utf16'] ?? null,
@@ -82,17 +82,17 @@ class Builder
                 'css' => $country->emoji['css'] ?? null,
                 'decimal' => $country->emoji['decimal'] ?? null,
                 'shortcode' => $country->emoji['shortcode'] ?? null,
-            ],
+            ]),
 
-            'flag_colors' => array_column($country->flag_colors, 'name'),
-            'flag_colors_web' => array_column($country->flag_colors, 'web_name'),
-            'flag_colors_contrast' => array_column($country->flag_colors, 'contrast'),
-            'flag_colors_hex' => array_column($country->flag_colors, 'hex'),
-            'flag_colors_rgb' => array_column($country->flag_colors, 'rgb'),
-            'flag_colors_cmyk' => array_column($country->flag_colors, 'cmyk'),
-            'flag_colors_hsl' => array_column($country->flag_colors, 'hsl'),
-            'flag_colors_hsv' => array_column($country->flag_colors, 'hsv'),
-            'flag_colors_pantone' => array_column($country->flag_colors, 'pantone'),
+            'flag_colors' => json_encode(array_column($country->flag_colors, 'name')),
+            'flag_colors_web' => json_encode(array_column($country->flag_colors, 'web_name')),
+            'flag_colors_contrast' => json_encode(array_column($country->flag_colors, 'contrast')),
+            'flag_colors_hex' => json_encode(array_column($country->flag_colors, 'hex')),
+            'flag_colors_rgb' => json_encode(array_column($country->flag_colors, 'rgb')),
+            'flag_colors_cmyk' => json_encode(array_column($country->flag_colors, 'cmyk')),
+            'flag_colors_hsl' => json_encode(array_column($country->flag_colors, 'hsl')),
+            'flag_colors_hsv' => json_encode(array_column($country->flag_colors, 'hsv')),
+            'flag_colors_pantone' => json_encode(array_column($country->flag_colors, 'pantone')),
 
             'is_visible' => true,
 
@@ -105,17 +105,17 @@ class Builder
         $countryCreated->extras()->create([
             'national_sport' => $country->national_sport,
             'cybersecurity_agency' => $country->cybersecurity_agency,
-            'popular_technologies' => $country->popular_technologies ?? [],
-            'internet' => [
+            'popular_technologies' => json_encode($country->popular_technologies ?? []),
+            'internet' => json_encode([
                 'speed' => [
                     'average_fixed' => $country->internet_speed['average_speed_fixed'] ?? null,
                     'average_mobile' => $country->internet_speed['average_speed_mobile'] ?? null,
                 ],
                 'penetration' => $country->internet_penetration,
 
-            ],
-            'religions' => $country->religions ?? [],
-            'international_organizations' => $country->international_organizations ?? [],
+            ]),
+            'religions' => json_encode($country->religions ?? []),
+            'international_organizations' => json_encode($country->international_organizations ?? []),
         ]);
 
         $countryCreated->coordinates()->create([
@@ -124,7 +124,7 @@ class Builder
             'degrees_with_decimal' => $country->coordinates['dd'] ?? null,
             'degrees_minutes_seconds' => $country->coordinates['dms'] ?? null,
             'degrees_and_decimal_minutes' => $country->coordinates['dm'] ?? null,
-            'gps' => [],
+            'gps' => json_encode([]),
         ]);
 
         $geographical = $country->geographical;
@@ -132,8 +132,8 @@ class Builder
             $countryCreated->geographical()->create([
                 'type' => $geographical['type'],
                 'features_type' => $geographical['features'][0]['type'],
-                'properties' => $geographical['features'][0]['properties'],
-                'geometry' => $geographical['features'][0]['geometry'],
+                'properties' => json_encode($geographical['features'][0]['properties']),
+                'geometry' => json_encode($geographical['features'][0]['geometry']),
             ]);
         }
 
