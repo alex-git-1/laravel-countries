@@ -1,7 +1,7 @@
 {
-    "name": "lwwcas/laravel-countries",
+    "name": "alex-git-1/laravel-countries",
     "description": "A comprehensive package for managing country data in Laravel applications, including multilingual support, geographic coordinates, and detailed metadata for seamless integration with Laravel.",
-    "homepage": "https://lwwcas.github.io/laravel-countries/",
+    "homepage": "https://github.com/alex-git-1/laravel-countries",
     "type": "library",
     "license": "MIT",
     "minimum-stability": "dev",
